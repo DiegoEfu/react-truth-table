@@ -3,7 +3,7 @@ import Input from './Input/Input';
 
 const Workspace = () => {
   return (
-    <Input />
+      <Input />
   )
 }
 

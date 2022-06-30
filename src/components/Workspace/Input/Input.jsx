@@ -1,5 +1,6 @@
 import { TextField, Grid, Button } from '@mui/material';
 import React, {useState} from 'react';
+import Results from './Results';
 
 const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻', '⊼', '⊽']
 
@@ -7,8 +8,8 @@ const Input = () => {
 
     const [correct, setCorrect] = useState(false);
     const [input, setInput] = useState("");
-    const [disStyle, setDisStyle] = useState({});
     const [variables, setVariables] = useState({});
+    const [results, setResults] =  useState({});
 
     const makeTableForVar = (k, n) => {
         let ac = [];
@@ -89,10 +90,7 @@ const Input = () => {
 
         setCorrect(checkParenthesesCorrectness(formula) && checkSymbolCorrectness(formula) && Object.keys(vars).length > 0);
         setInput(formula);
-        if(!correct)
-            setDisStyle({background: "#BBB"});
-        else
-            setDisStyle({background: "blue"})
+        setResults({});
     }
 
     const evaluate = (exp, acc) => {
@@ -200,23 +198,21 @@ const Input = () => {
         return {[exp.join("")]: results, ...acc};
     };
 
-    const generateTables = () => {
-        const result = evaluate(input, {});
-        console.log(result);
-    };
-
     return (
-        <Grid container style={{background: '#66CDAA', paddingTop: '15px', paddingBottom: '15px'}}>
-            <Grid item xs={1} />
-            <Grid item xs={9}>
-                <TextField placeholder='Introduce your formalized formula.' fullWidth 
-                    variant='filled' style={{background: "white"}} label="Input"
-                    onChange={(e) => {checkCorrectness(e.target.value)}} />
+        <>
+            <Grid container style={{background: '#66CDAA', paddingTop: '15px', paddingBottom: '15px'}}>
+                <Grid item xs={1} />
+                <Grid item xs={9}>
+                    <TextField placeholder='Introduce your formalized formula.' fullWidth 
+                        variant='filled' style={{background: "white"}} label="Input"
+                        onChange={(e) => {checkCorrectness(e.target.value)}} />
+                </Grid>
+                <Grid item md={1} style={{display: "flex", flexDirection:"row-reverse"}}>
+                    <Button fullWidth variant='contained' disabled={!correct} onClick={() => {setResults(evaluate(input, {}))}}>Submit</Button>
+                </Grid>
             </Grid>
-            <Grid item md={1} style={{display: "flex", flexDirection:"row-reverse"}}>
-                <Button fullWidth variant='contained' disabled={!correct} onClick={generateTables}>Submit</Button>
-            </Grid>
-        </Grid>
+            {Object.keys(results).length !== 0 ? (<Results tables={results} variables={variables} />) : (<>NADA</>)}
+        </>
     );
 };
 
