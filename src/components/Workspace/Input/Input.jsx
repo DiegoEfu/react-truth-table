@@ -2,7 +2,7 @@ import { TextField, Grid, Button } from '@mui/material';
 import React, {useState} from 'react';
 import Results from './Results';
 
-const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻', '⊼', '⊽']
+const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻', '⊼', '⊽'];
 
 const Input = () => {
 
@@ -88,6 +88,17 @@ const Input = () => {
             return invalidChars.length === 0;
         };
 
+        const changeSymbols = (formula) => {
+            formula = formula.join("");
+            formula = formula.replace(/->|⇒|⊃/g, '→');
+            formula = formula.replace(/\|\|/g, '∨');
+            formula = formula.replace(/&&|\^/g, '∧');
+            formula = formula.replace(/!/g, '¬');
+            formula = formula.replace(/<->/g, '↔');
+            return formula.split("");
+        };
+        
+        formula = changeSymbols(formula);
         setCorrect(checkParenthesesCorrectness(formula) && checkSymbolCorrectness(formula) && Object.keys(vars).length > 0);
         setInput(formula);
         setResults({});
@@ -211,7 +222,7 @@ const Input = () => {
                     <Button fullWidth variant='contained' disabled={!correct} onClick={() => {setResults(evaluate(input, {}))}}>Submit</Button>
                 </Grid>
             </Grid>
-            {Object.keys(results).length !== 0 ? (<Results tables={results} variables={variables} />) : (<>NADA</>)}
+            {Object.keys(results).length !== 0 ? (<Results formula={input.join("") }tables={results} variables={variables} />) : (<>NADA</>)}
         </>
     );
 };

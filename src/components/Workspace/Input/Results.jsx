@@ -1,10 +1,10 @@
 import React from 'react';
 import { Paper, Grid, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Typography } from '@mui/material';
-import { useEffect } from 'react';
 
-const Results = ({tables, variables}) => {
+const Results = ({formula, tables, variables}) => {
     return (
         <>
+            <Typography variant='body-1' color="white"><strong>Interpreted Formula:</strong> {formula}</Typography>
             <Typography variant='h2' color="white" align='center'>Results</Typography>
             <Typography variant='h4' color="white" align='center'>Variables</Typography>
             <Grid container style={{paddingTop: '15px', paddingBottom: '15px'}} justifyContent="space-evenly" direction="row-reverse">
