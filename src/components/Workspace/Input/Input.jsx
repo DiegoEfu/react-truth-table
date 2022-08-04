@@ -72,17 +72,17 @@ const Input = () => {
                     else{
                         const succ = formula[i + 1];
                         const pred = formula[i - 1];
-
-                        if((checkIfVar(succ) || checkIfOpen(succ)) && (checkIfVar(pred) || checkIfClosed(pred)))
+                        if((checkIfVar(succ) || checkIfOpen(succ) || succ === '¬') && (checkIfVar(pred) || checkIfClosed(pred)))
                             continue;
 
-                            console.log("SIMBOlO INVALIDO");
+                        console.log("SIMBOLO INVÁLIDO");
                     }
                 }
                 else if(checkIfVar(formula[i]) || checkIfOpen(formula[i]) || checkIfClosed(formula[i]))
                     continue;
 
                 invalidChars.push(formula[i]);
+                console.log(invalidChars);
             }
 
             return invalidChars.length === 0;
@@ -110,86 +110,105 @@ const Input = () => {
         const openParentheses = [];
         const closeParentheses = [];
 
-        for(let i = 0; i < arr.length; i++){ // Check subexpressions in openParentheses.
-            if(arr[i] === '¬' && arr[i+1] === '('){
-                openParentheses.push(i);
-                i += 2;
-                continue;
-            }
+        console.log(exp.join(""));
+        for(let i = 0; i < arr.length; i++){ // Check subexpressions.
+            console.log(arr[i]);
+            if(arr[i] === '¬' && arr[i+1] === '('){ // If it has negation+parentheses body.
+                openParentheses.push(i+1);
+                i += 1;
+            } // If it has negation + variable body.
+            else if(arr[i] === '¬' && Object.keys(variables).indexOf(arr[i+1]) !== -1 && exp.join("") !== arr[i] + arr[i+1]){
+                acc = evaluate(arr.join("").substring(i, i+2).split(""), acc);
+            } // If it's a start of a parentheses.
             else if(arr[i] === '('){
                 openParentheses.push(i);
-                continue;
-            }
+            } // If it's the end of a parentheses.
             else if(arr[i] === ')'){
                 const subexp = arr.join("").substring(openParentheses[openParentheses.length - 1] + 1, i).split("");
-                console.log(subexp)
-                if(Object.keys(acc).indexOf(subexp) !== -1)
+                if(Object.keys(acc).indexOf(subexp.join("")) !== -1) // If the subexpression exists, do nothing.
                     continue;
-                else
-                    acc = {...acc, ...evaluate(subexp, acc)}; 
+                else 
+                {
+                    acc = {...acc, ...evaluate(subexp, acc)};
+                    console.log("HEY");
 
+                    if(arr[openParentheses[openParentheses.length - 1] - 1] === '¬')
+                        acc = {...acc, ...evaluate(('¬(' + subexp.join("") + ')').split(""), acc)}
+                }
+                    
                 closeParentheses.push(i);
             }
         }
-        console.log(openParentheses + " " + closeParentheses)
 
         for(let i = 0; i < arr.length; i++){ // Evaluation
             let open = 0, close = 0;
-            if(logicOperators.indexOf(arr[i]) !== -1){
-                open = openParentheses[0];
-                close = closeParentheses[0];
-                console.log(open + " " + close)
+            if(logicOperators.indexOf(arr[i]) !== -1){ // If it's a logical operator
+                open = openParentheses[0] !== undefined ? openParentheses[0] : arr.length;
+                close = closeParentheses[0] !== undefined ? closeParentheses[0] : 0;
 
-                if(i >= open && i <= close)
+                if(i >= open && i <= close) // If it's inside a subexpression, skip.
                     continue;
-                else{
+                else{ // Else, evaluate.
                     
+                    // standard cases: (negation with variable and simple operations)
+                    if(arr[i] === '¬' && Object.keys(variables).indexOf(arr[i+1]) !== -1 && Object.keys(acc).indexOf('¬'+arr[i+1]) !== -1)
+                        continue;
+
                     const left = arr[i-1] === ')' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
-                    : variables[arr[i-1]];
+                    : arr[i-2] === '¬' ? acc['¬' + arr[i-1]] : variables[arr[i-1]];
 
                     const right = arr[i+1] === '(' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
-                    : variables[arr[i+1]];
-
-                    console.log(left);
+                    : (arr[i+1] === '¬' ? (Object.keys(variables).indexOf(arr[i+2]) !== -1 ? acc[arr.join("").substring(i+1, i+3)] 
+                    : []) : variables[arr[i+1]]);
+                    console.log(arr[i]);
                     console.log(right);
+                    console.log(left);
 
                     switch (arr[i]) {
                         case '∧': // Conjunction
+                            console.log("Conjunction " + arr[i]);
                             for(let i = 0; i < left.length; i++)
                                 results.push(left[i] && right[i]);                                                    
                         break;
                         
                         case '∨': // Disjunction
+                            console.log("Disjunction");
                             for(let i = 0; i < left.length; i++)
-                                results.push(left[i] || right[i]);       
+                                results.push(left[i] || right[i]);
                         break;
 
                         case '¬': // Negation
+                            console.log("Negation");
                             for(let i = 0; i < right.length; i++)
                                 results.push(!right[i]);
                         break;
 
                         case '→': // Implication
+                            console.log("Implication");
                             for(let i = 0; i < left.length; i++)
                                 results.push(!left[i] || (left[i] && right[i]))
                         break;
 
                         case '↔': // Equivalence
+                            console.log("Equivalence"); 
                             for(let i = 0; i < left.length; i++)
                                 results.push(left[i] === right[i]);
                         break;
 
-                        case '⊻': // Exclusice disjunction
+                        case '⊻': // Exclusive disjunction
+                            console.log("Exclusive disjunction");
                             for(let i = 0; i < left.length; i++)
                                 results.push((left[i] && !right[i]) || (right[i] && !left[i]));
                         break;
 
                         case '⊼': // NAND
+                            console.log("NAND");
                             for(let i = 0; i < left.length; i++)
                                 results.push(!(left[i] && right[i]));
                         break;
 
                         case '⊽': // NOR
+                            console.log("NOR");
                             for(let i = 0; i < left.length; i++)
                                 results.push(!(left[i] || right[i]));                            
                         break;
@@ -198,15 +217,13 @@ const Input = () => {
                             alert("An error occurred.");
                         break;
                     }
-                
                     break;
                 }
             }
         }
-
         console.log(results);
-
-        return {[exp.join("")]: results, ...acc};
+        if(results !== [])
+            return {[exp.join("")]: results, ...acc};
     };
 
     return (
