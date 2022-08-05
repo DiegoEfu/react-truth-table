@@ -43,6 +43,10 @@ const Input = () => {
         setVariables({...vars});
         console.log(vars);
 
+        const checkIfVar = (c) => Object.keys(vars).indexOf(c) !== -1 || c === ')';
+        const checkIfClosed = (c) => c === ')';
+        const checkIfOpen = (c) => c === '(';
+
         const checkParenthesesCorrectness = (formula) => {
             let stack = [];
 
@@ -59,10 +63,6 @@ const Input = () => {
         const checkSymbolCorrectness = (formula) => {
             let invalidChars = [];
 
-            const checkIfVar = (c) => Object.keys(vars).indexOf(c) !== -1 || c === ')';
-            const checkIfClosed = (c) => c === ')';
-            const checkIfOpen = (c) => c === '(';
-
             for(let i = 0; i < formula.length; i++){
                 if(logicOperators.indexOf(formula[i]) !== -1){
                     if(formula[i] === '¬'){
@@ -75,7 +75,6 @@ const Input = () => {
                         if((checkIfVar(succ) || checkIfOpen(succ) || succ === '¬') && (checkIfVar(pred) || checkIfClosed(pred)))
                             continue;
 
-                        console.log("SIMBOLO INVÁLIDO");
                     }
                 }
                 else if(checkIfVar(formula[i]) || checkIfOpen(formula[i]) || checkIfClosed(formula[i]))
@@ -95,10 +94,22 @@ const Input = () => {
             formula = formula.replace(/&&|\^/g, '∧');
             formula = formula.replace(/!/g, '¬');
             formula = formula.replace(/<->/g, '↔');
-            return formula.split("");
+            formula = formula.split("");
+
+            for(let i = 0; i < formula.length; i++)
+            {
+                if(checkIfOpen(formula[i]) && checkIfVar(formula[i+1]) && checkIfClosed(formula[i+2])){
+                    formula = [...formula.slice(0,i), ...formula.slice(i+1,i+2), ...formula.slice(i+3)];
+                    console.log(formula);
+                    i += 2;
+                }
+            }
+
+            return formula;
         };
-        
+        console.log(formula);        
         formula = changeSymbols(formula);
+        console.log(formula);    
         setCorrect(checkParenthesesCorrectness(formula) && checkSymbolCorrectness(formula) && Object.keys(vars).length > 0);
         setInput(formula);
         setResults({});
@@ -125,26 +136,33 @@ const Input = () => {
             } // If it's the end of a parentheses.
             else if(arr[i] === ')'){
                 const subexp = arr.join("").substring(openParentheses[openParentheses.length - 1] + 1, i).split("");
+                closeParentheses.push(i);
                 if(Object.keys(acc).indexOf(subexp.join("")) !== -1) // If the subexpression exists, do nothing.
                     continue;
                 else 
                 {
                     acc = {...acc, ...evaluate(subexp, acc)};
-                    console.log("HEY");
+                    console.log(subexp.join(""));
+                    console.log(acc);
 
                     if(arr[openParentheses[openParentheses.length - 1] - 1] === '¬')
-                        acc = {...acc, ...evaluate(('¬(' + subexp.join("") + ')').split(""), acc)}
+                        if(acc[subexp.join("")] === undefined)
+                            continue;
+                        else
+                        {
+                            acc = {...acc, ...evaluate(('¬(' + subexp.join("") + ')').split(""), acc)};
+                            console.log("HEREEEEE");
+                        }
+                            
                 }
-                    
-                closeParentheses.push(i);
             }
         }
 
         for(let i = 0; i < arr.length; i++){ // Evaluation
             let open = 0, close = 0;
             if(logicOperators.indexOf(arr[i]) !== -1){ // If it's a logical operator
-                open = openParentheses[0] !== undefined ? openParentheses[0] : arr.length;
-                close = closeParentheses[0] !== undefined ? closeParentheses[0] : 0;
+                open = openParentheses[0] !== undefined ? openParentheses[0] : i + 1;
+                close = closeParentheses[0] !== undefined ? closeParentheses[0] : -1;
 
                 if(i >= open && i <= close) // If it's inside a subexpression, skip.
                     continue;
@@ -153,16 +171,18 @@ const Input = () => {
                     // standard cases: (negation with variable and simple operations)
                     if(arr[i] === '¬' && Object.keys(variables).indexOf(arr[i+1]) !== -1 && Object.keys(acc).indexOf('¬'+arr[i+1]) !== -1)
                         continue;
-
+                    
                     const left = arr[i-1] === ')' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
                     : arr[i-2] === '¬' ? acc['¬' + arr[i-1]] : variables[arr[i-1]];
 
                     const right = arr[i+1] === '(' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
                     : (arr[i+1] === '¬' ? (Object.keys(variables).indexOf(arr[i+2]) !== -1 ? acc[arr.join("").substring(i+1, i+3)] 
-                    : []) : variables[arr[i+1]]);
+                    : acc['¬(' + arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift()) + ')']) : variables[arr[i+1]]);                        
+
                     console.log(arr[i]);
                     console.log(right);
                     console.log(left);
+                    console.log(acc);
 
                     switch (arr[i]) {
                         case '∧': // Conjunction
@@ -223,7 +243,7 @@ const Input = () => {
         }
         console.log(results);
         if(results !== [])
-            return {[exp.join("")]: results, ...acc};
+            return {...acc, [exp.join("")]: results};
     };
 
     return (
