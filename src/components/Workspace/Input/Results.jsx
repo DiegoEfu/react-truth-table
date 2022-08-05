@@ -38,7 +38,7 @@ const Results = ({formula, tables, variables}) => {
                 ))}
             </Grid>
                 <Typography variant='h4' color="white" align='center'>Formulas</Typography>
-                <Grid container style={{paddingTop: '15px', paddingBottom: '15px'}} justifyContent="space-evenly" direction="row-reverse">
+                <Grid container style={{paddingTop: '15px', paddingBottom: '15px'}} justifyContent="space-evenly">
                 {/* This is going to be its own component */}
                 {Object.keys(tables).map( (k) => (
                     <Grid style={{marginBottom: "10px"}} item lg={10/Object.keys(tables).length} xs={10}>                    
@@ -46,7 +46,7 @@ const Results = ({formula, tables, variables}) => {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell align='center'>
+                                        <TableCell align='center' key={k}>
                                             <strong>{k}</strong>
                                         </TableCell>
                                     </TableRow>

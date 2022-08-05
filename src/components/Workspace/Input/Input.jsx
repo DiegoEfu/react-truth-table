@@ -129,7 +129,7 @@ const Input = () => {
                 i += 1;
             } // If it has negation + variable body.
             else if(arr[i] === '¬' && Object.keys(variables).indexOf(arr[i+1]) !== -1 && exp.join("") !== arr[i] + arr[i+1]){
-                acc = evaluate(arr.join("").substring(i, i+2).split(""), acc);
+                acc = {...acc, ...evaluate(arr.join("").substring(i, i+2).split(""), acc)};
             } // If it's a start of a parentheses.
             else if(arr[i] === '('){
                 openParentheses.push(i);
@@ -157,6 +157,8 @@ const Input = () => {
                 }
             }
         }
+
+        console.log(acc);
 
         for(let i = 0; i < arr.length; i++){ // Evaluation
             let open = 0, close = 0;
@@ -241,8 +243,9 @@ const Input = () => {
                 }
             }
         }
+        console.log(exp.join(""));
         console.log(results);
-        if(results !== [])
+        if(results.length !== 0)
             return {...acc, [exp.join("")]: results};
     };
 
