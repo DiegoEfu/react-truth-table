@@ -46,7 +46,7 @@ const Results = ({formula, tables, variables}) => {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell align='center' key={k}>
+                                        <TableCell align='center'>
                                             <strong>{k}</strong>
                                         </TableCell>
                                     </TableRow>
