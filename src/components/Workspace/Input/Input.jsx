@@ -43,7 +43,7 @@ const Input = () => {
         setVariables({...vars});
         console.log(vars);
 
-        const checkIfVar = (c) => Object.keys(vars).indexOf(c) !== -1 || c === ')';
+        const checkIfVar = (c) => Object.keys(vars).indexOf(c) !== -1;
         const checkIfClosed = (c) => c === ')';
         const checkIfOpen = (c) => c === '(';
 
@@ -64,20 +64,17 @@ const Input = () => {
             let invalidChars = [];
 
             for(let i = 0; i < formula.length; i++){
+                const succ = formula[i + 1];
+                const pred = formula[i - 1];
                 if(logicOperators.indexOf(formula[i]) !== -1){
-                    if(formula[i] === '¬'){
-                        if(checkIfVar(formula[i+1]) || checkIfOpen(formula[i+1]))
+                    if(formula[i] === '¬')
+                        if((checkIfVar(succ) || checkIfOpen(succ)) && !(checkIfVar(pred)))
                             continue;
-                    }
-                    else{
-                        const succ = formula[i + 1];
-                        const pred = formula[i - 1];
+                    else
                         if((checkIfVar(succ) || checkIfOpen(succ) || succ === '¬') && (checkIfVar(pred) || checkIfClosed(pred)))
                             continue;
-
-                    }
                 }
-                else if(checkIfVar(formula[i]) || checkIfOpen(formula[i]) || checkIfClosed(formula[i]))
+                else if((checkIfVar(formula[i]) || checkIfOpen(formula[i]) || checkIfClosed(formula[i])) && !checkIfVar(pred))
                     continue;
 
                 invalidChars.push(formula[i]);
