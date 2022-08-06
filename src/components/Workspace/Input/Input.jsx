@@ -50,12 +50,16 @@ const Input = () => {
         const checkParenthesesCorrectness = (formula) => {
             let stack = [];
 
-            formula.map((c) => {
+            for(let i = 0; i < formula.length; i++){
+                let c = formula[i];
+
                 if(c === '(')
                     stack.push(c);
-                else if(c === ')')
+                else if(c === ')' && stack.length !== 0)
                     stack.pop();
-            });
+                else if(c === ')')
+                    return false;
+            }
 
             return stack.length === 0;
         };
