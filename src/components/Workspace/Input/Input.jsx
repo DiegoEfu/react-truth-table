@@ -125,9 +125,10 @@ const Input = () => {
         const results = [];
         const arr = exp;
         const openParentheses = [];
-        const closeParentheses = [];
+        const closeParentheses = {};
 
         console.log(exp.join(""));
+        let checkedParentheses = 0;
         if(exp.length > 2)
             for(let i = 0; i < arr.length; i++){ // Check subexpressions.
                 console.log(arr[i]);
@@ -142,8 +143,9 @@ const Input = () => {
                     openParentheses.push(i);
                 } // If it's the end of a parentheses.
                 else if(arr[i] === ')'){
-                    const subexp = arr.join("").substring(openParentheses[openParentheses.length - 1] + 1, i).split("");
-                    closeParentheses.push(i);
+                    checkedParentheses++;
+                    const subexp = arr.join("").substring(openParentheses[openParentheses.length - checkedParentheses] + 1, i).split("");
+                    closeParentheses[openParentheses[openParentheses.length - checkedParentheses]] = i;
                     if(Object.keys(acc).indexOf(subexp.join("")) !== -1) // If the subexpression exists, do nothing.
                         continue;
                     else 
@@ -152,7 +154,7 @@ const Input = () => {
                         console.log(subexp.join(""));
                         console.log(acc);
 
-                        if(arr[openParentheses[openParentheses.length - 1] - 1] === '¬')
+                        if(arr[openParentheses[openParentheses.length - checkedParentheses] - 1] === '¬')
                             if(acc[subexp.join("")] === undefined)
                                 continue;
                             else
@@ -169,22 +171,21 @@ const Input = () => {
                 let open = 0, close = 0;
                 if(logicOperators.indexOf(arr[i]) !== -1){ // If it's a logical operator
                     open = openParentheses[0] !== undefined ? openParentheses[0] : i + 1;
-                    close = closeParentheses[0] !== undefined ? closeParentheses[0] : -1;
+                    close = closeParentheses[open] === undefined ? closeParentheses[open] : -1;
 
                     if(i >= open && i <= close) // If it's inside a subexpression, skip.
                         continue;
                     else{ // Else, evaluate.
-                        
                         // standard cases: (negation with variable and simple operations)
                         if(arr[i] === '¬' && Object.keys(variables).indexOf(arr[i+1]) !== -1 && Object.keys(acc).indexOf('¬'+arr[i+1]) !== -1)
                             continue;
-                        
-                        const left = arr[i-1] === ')' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
-                        : arr[i-2] === '¬' ? acc['¬' + arr[i-1]] : variables[arr[i-1]];
 
-                        const right = arr[i+1] === '(' ? acc[arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift())]
+                        const left = arr[i-1] === ')' ? acc[arr.join("").substring(openParentheses.shift() + 1, i-1)]
+                        : arr[i-2] === '¬' ? acc['¬' + arr[i-1]] : variables[arr[i-1]];                
+
+                        const right = arr[i+1] === '(' ? acc[arr.join("").substring(i + 2, closeParentheses[i+1])]
                         : (arr[i+1] === '¬' ? (Object.keys(variables).indexOf(arr[i+2]) !== -1 ? acc[arr.join("").substring(i+1, i+3)] 
-                        : acc['¬(' + arr.join("").substring(openParentheses.shift() + 1, closeParentheses.shift()) + ')']) : variables[arr[i+1]]);                        
+                        : acc['¬(' + arr.join("").substring(i + 3, closeParentheses[i+2]) + ')']) : variables[arr[i+1]]);                        
 
                         console.log(arr[i]);
                         console.log(right);
