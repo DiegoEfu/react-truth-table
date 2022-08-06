@@ -41,7 +41,7 @@ const Results = ({formula, tables, variables}) => {
                 <Grid container style={{paddingTop: '15px', paddingBottom: '15px'}} justifyContent="space-evenly">
                 {/* This is going to be its own component */}
                 {Object.keys(tables).map( (k) => (
-                    <Grid style={{marginBottom: "10px"}} item lg={10/Object.keys(tables).length} xs={10}>                    
+                    <Grid style={{marginBottom: "10px"}} item lg={5} xs={10}>                    
                         <TableContainer component={Paper}>
                             <Table>
                                 <TableHead>
@@ -73,4 +73,4 @@ const Results = ({formula, tables, variables}) => {
   )
 }
 
-export default Results
+export default Results;

@@ -95,11 +95,12 @@ const Input = () => {
 
         const changeSymbols = (formula) => {
             formula = formula.join("");
+            
+            formula = formula.replace(/<->/g, '↔');
             formula = formula.replace(/->|⇒|⊃/g, '→');
             formula = formula.replace(/\|\|/g, '∨');
             formula = formula.replace(/&&|\^/g, '∧');
             formula = formula.replace(/!/g, '¬');
-            formula = formula.replace(/<->/g, '↔');
             formula = formula.split("");
 
             for(let i = 0; i < formula.length; i++)
