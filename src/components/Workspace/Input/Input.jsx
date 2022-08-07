@@ -164,7 +164,7 @@ const Input = () => {
         const precedence = checkPrecedence(exp);
 
         console.log(exp.join(""));
-        if(exp.length > 2){
+        if(exp.length > 2){ // Subexpression checking
             const openI = [];
 
             for(let i = 0; i < arr.length; i++){ // Check subexpressions.
@@ -210,14 +210,10 @@ const Input = () => {
 
         if(exp.length > 1)
             for(let i = 0; i < arr.length; i++){ // Evaluation
-                let open = 0, close = 0;
+                let inParentheses = 0;
                 if(logicOperators.indexOf(arr[i]) !== -1){ // If it's a logical operator
-                    open = openParentheses[0] !== undefined ? openParentheses[0] : i + 1;
-                    close = closeParentheses[open] !== undefined ? closeParentheses[open] : -1;
 
-                    console.log(open + " " + close);
-
-                    if(i >= open && i <= close) // If it's inside a subexpression, skip.
+                    if(inParentheses) // If it's inside a subexpression, skip.
                         continue;
                     else{ // Else, evaluate.
                         // standard cases: (negation with variable and simple operations)
@@ -280,6 +276,10 @@ const Input = () => {
                         break;
                     }
                 }
+                else if(arr[i] === '(')
+                    inParentheses++;
+                else if(arr[i] === ')')
+                    inParentheses--;
             }
         else // rare case: only one variable in the formula
             results.push(...variables[exp[0]]);
