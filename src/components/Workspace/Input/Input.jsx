@@ -102,6 +102,7 @@ const Input = () => {
             formula = formula.replace(/\|\|/g, '∨');
             formula = formula.replace(/&&|\^/g, '∧');
             formula = formula.replace(/!/g, '¬');
+            formula = formula.replace(/¬¬/g, '');
             formula = formula.split("");
 
             for(let i = 0; i < formula.length; i++)
