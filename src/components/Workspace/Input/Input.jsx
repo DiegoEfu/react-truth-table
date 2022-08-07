@@ -124,33 +124,18 @@ const Input = () => {
         setResults({});
     }
 
-    const checkPrecedence = (exp) => {
-        const precedences = {'∧': 1, '∨': 3, '¬': 0, '→': 4, '↔': 5, '⊻': 2};
+    const checkHigherPrecedence = (exp) => {
+        const precedences = {'∧': 1, '∨': 3, '→': 4, '↔': 5, '⊻': 2};
         let inParentheses = 0;
-        const precedence = [];
+        let precedence = -1;
         for(let i = 0; i < exp.length; i++){ // Find all symbols with their precedence
             const currentSymbol = exp[i];
             if(currentSymbol === '(')
                 inParentheses++;
             else if(currentSymbol === ')')
                 inParentheses--;
-            else if(!inParentheses && isLogicalOperator(currentSymbol)){
-                for(let j = 0; j < precedence.length || precedence.length === 0; j++){
-                    if(precedence.length === 0){
-                        precedence.push(i);
-                        break;
-                    }
-
-                    if(precedences[exp[precedence[j]]] >= precedences[currentSymbol]){
-                        precedence.splice(j-1, 0, i);
-                        break;
-                    }
-                    else{
-                        precedence.splice(j+1, 0, i);
-                        break;
-                    }
-                }
-            }
+            else if(!inParentheses && isLogicalOperator(currentSymbol))
+                precedence = precedence < precedences[currentSymbol] ? i : precedence;
         }
 
         console.log(precedence);
@@ -162,7 +147,6 @@ const Input = () => {
         const arr = exp;
         const openParentheses = [];
         const closeParentheses = {};
-        const precedence = checkPrecedence(exp);
 
         console.log(exp.join(""));
         if(exp.length > 2){ // Subexpression checking
