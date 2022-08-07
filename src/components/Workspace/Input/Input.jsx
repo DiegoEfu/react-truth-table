@@ -2,7 +2,8 @@ import { TextField, Grid, Button } from '@mui/material';
 import React, {useState} from 'react';
 import Results from './Results';
 
-const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻', '⊼', '⊽'];
+const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻'];
+const isLogicalOperator = (c) => logicOperators.indexOf(c) !== -1;
 
 const Input = () => {
 
@@ -31,7 +32,7 @@ const Input = () => {
         return ac;
     };
 
-    const checkCorrectness = (formula) => {
+    const checkCorrectness = (formula) => { // Parsing
         // Spaces must be eliminated first.
         formula = formula.replaceAll(/\s/g, "");
 
@@ -122,11 +123,45 @@ const Input = () => {
         setResults({});
     }
 
+    const checkPrecedence = (exp) => {
+        const precedences = {'∧': 1, '∨': 3, '¬': 0, '→': 4, '↔': 5, '⊻': 2};
+        let inParentheses = 0;
+        const precedence = [];
+        for(let i = 0; i < exp.length; i++){ // Find all symbols with their precedence
+            const currentSymbol = exp[i];
+            if(currentSymbol === '(')
+                inParentheses++;
+            else if(currentSymbol === ')')
+                inParentheses--;
+            else if(!inParentheses && isLogicalOperator(currentSymbol)){
+                for(let j = 0; j < precedence.length || precedence.length === 0; j++){
+                    if(precedence.length === 0){
+                        precedence.push(i);
+                        break;
+                    }
+
+                    if(precedences[exp[precedence[j]]] >= precedences[currentSymbol]){
+                        precedence.splice(j-1, 0, i);
+                        break;
+                    }
+                    else{
+                        precedence.splice(j+1, 0, i);
+                        break;
+                    }
+                }
+            }
+        }
+
+        console.log(precedence);
+        return precedence;
+    };
+
     const evaluate = (exp, acc) => {
         const results = [];
         const arr = exp;
         const openParentheses = [];
         const closeParentheses = {};
+        const precedence = checkPrecedence(exp);
 
         console.log(exp.join(""));
         if(exp.length > 2){
@@ -168,7 +203,6 @@ const Input = () => {
                 }
             }
         }
-           
 
         console.log(exp.join(""));
         console.log(closeParentheses);
@@ -237,18 +271,6 @@ const Input = () => {
                                 console.log("Exclusive disjunction");
                                 for(let i = 0; i < left.length; i++)
                                     results.push((left[i] && !right[i]) || (right[i] && !left[i]));
-                            break;
-
-                            case '⊼': // NAND
-                                console.log("NAND");
-                                for(let i = 0; i < left.length; i++)
-                                    results.push(!(left[i] && right[i]));
-                            break;
-
-                            case '⊽': // NOR
-                                console.log("NOR");
-                                for(let i = 0; i < left.length; i++)
-                                    results.push(!(left[i] || right[i]));                            
                             break;
                         
                             default:
