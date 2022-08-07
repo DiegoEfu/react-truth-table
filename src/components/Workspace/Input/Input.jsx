@@ -124,7 +124,7 @@ const Input = () => {
         setResults({});
     }
 
-    const checkHigherPrecedence = (exp) => {
+    const checkHighestPrecedence = (exp) => {
         const precedences = {'∧': 1, '∨': 3, '→': 4, '↔': 5, '⊻': 2};
         let inParentheses = 0;
         let precedence = -1;
@@ -134,12 +134,24 @@ const Input = () => {
                 inParentheses++;
             else if(currentSymbol === ')')
                 inParentheses--;
-            else if(!inParentheses && isLogicalOperator(currentSymbol))
+            else if(!inParentheses && isLogicalOperator(currentSymbol) && currentSymbol !== '¬')
                 precedence = precedence < precedences[currentSymbol] ? i : precedence;
         }
-
-        console.log(precedence);
         return precedence;
+    };
+
+    const countSymbols = (exp) => {
+        let count = 0, inParentheses = 0;
+        for(let i = 0; i < exp.length; i++){ // Find all symbols with their precedence
+            const currentSymbol = exp[i];
+            if(currentSymbol === '(')
+                inParentheses++;
+            else if(currentSymbol === ')')
+                inParentheses--;
+            else if(!inParentheses && isLogicalOperator(currentSymbol)  && currentSymbol !== '¬')
+                count++;
+        }
+        return count;
     };
 
     const evaluate = (exp, acc) => {
@@ -147,8 +159,17 @@ const Input = () => {
         const arr = exp;
         const openParentheses = [];
         const closeParentheses = {};
-
         console.log(exp.join(""));
+        const highestPrecedence = checkHighestPrecedence(arr);
+
+        if(arr[highestPrecedence] !== '¬' && countSymbols(arr) >= 2){
+             arr.splice(highestPrecedence, 0, ')');
+             arr.splice(highestPrecedence+2,0, '(')
+             arr.push(')');
+             arr.unshift('(');
+        }
+
+        console.log(arr.join(""));
         if(exp.length > 2){ // Subexpression checking
             const openI = [];
 
