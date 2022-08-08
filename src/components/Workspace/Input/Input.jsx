@@ -214,11 +214,11 @@ const Input = () => {
         console.log(closeParentheses);
         console.log(acc);
 
+        let inParentheses = 0;
         if(exp.length > 1)
             for(let i = 0; i < arr.length; i++){ // Evaluation
-                let inParentheses = 0;
                 if(logicOperators.indexOf(arr[i]) !== -1){ // If it's a logical operator
-
+                    
                     if(inParentheses) // If it's inside a subexpression, skip.
                         continue;
                     else{ // Else, evaluate.
@@ -240,7 +240,7 @@ const Input = () => {
 
                         switch (arr[i]) {
                             case '∧': // Conjunction
-                                console.log("Conjunction " + arr[i]);
+                                console.log("Conjunction " + i);
                                 for(let i = 0; i < left.length; i++)
                                     results.push(left[i] && right[i]);                                                    
                             break;
