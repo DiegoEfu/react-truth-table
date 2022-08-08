@@ -4,7 +4,6 @@ import Results from './Results';
 
 const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻'];
 const isLogicalOperator = (c) => logicOperators.indexOf(c) !== -1;
-const expressionChanges = {};
 
 const Input = () => {
 

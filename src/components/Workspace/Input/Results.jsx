@@ -2,7 +2,17 @@ import React from 'react';
 import { Paper, Grid, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Typography } from '@mui/material';
 
 const Results = ({formula, tables, variables}) => {
-    const arr = tables[formula];
+    const searchForLongest = () => {
+        let longest = -1;
+        const keys = Object.keys(tables);
+        for(let i = 0; i < keys.length; i++)
+            longest = longest < keys[i].length ? i : longest;
+
+        return tables[keys[longest]];
+    };
+
+    const arr = tables[formula] !== undefined ? tables[formula] : searchForLongest();
+    
     return (
         <>
             <Typography variant='body-1' color="white"><strong>Interpreted Formula:</strong> {formula}</Typography>
