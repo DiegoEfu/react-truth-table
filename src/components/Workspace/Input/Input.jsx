@@ -42,7 +42,6 @@ const Input = () => {
         // Different variables will be identified and then their table will be made.
         const vars = makeTableForVars([...new Set(formula.filter(x => x.match(/[a-zA-Z]/)).sort())]);
         setVariables({...vars});
-        console.log(vars);
 
         const checkIfVar = (c) => Object.keys(vars).indexOf(c) !== -1;
         const checkIfClosed = (c) => c === ')';
@@ -72,13 +71,11 @@ const Input = () => {
                 const succ = formula[i + 1];
                 const pred = formula[i - 1];
                 if(logicOperators.indexOf(formula[i]) !== -1){
-                    console.log(formula[i]);
                     if(formula[i] === '¬'){
                         if((checkIfVar(succ) || checkIfOpen(succ)) && !(checkIfVar(pred)))
                             continue;
                     }                        
                     else{
-                        console.log((checkIfVar(succ) || checkIfOpen(succ) || succ === '¬'));
                         if((checkIfVar(succ) || checkIfOpen(succ) || succ === '¬') && (checkIfVar(pred) || checkIfClosed(pred)))
                             continue;
                     }
@@ -88,7 +85,6 @@ const Input = () => {
                     continue;
 
                 invalidChars.push(formula[i]);
-                console.log(invalidChars);
             }
 
             return invalidChars.length === 0;
@@ -109,16 +105,13 @@ const Input = () => {
             {
                 if(checkIfOpen(formula[i]) && checkIfVar(formula[i+1]) && checkIfClosed(formula[i+2])){
                     formula = [...formula.slice(0,i), ...formula.slice(i+1,i+2), ...formula.slice(i+3)];
-                    console.log(formula);
                     i += 2;
                 }
             }
 
             return formula;
-        };
-        console.log(formula);        
+        };   
         formula = changeSymbols(formula);
-        console.log(formula);    
         setCorrect(checkParenthesesCorrectness(formula) && checkSymbolCorrectness(formula) && Object.keys(vars).length > 0);
         setInput(formula);
         setResults({});
@@ -160,7 +153,6 @@ const Input = () => {
         const arr = [...exp];
         const openParentheses = [];
         const closeParentheses = {};
-        console.log(exp.join(""));
 
         if(countSymbols(arr) >= 2){
             const highestPrecedence = checkHighestPrecedence(arr);
@@ -170,12 +162,10 @@ const Input = () => {
             arr.unshift('(');
         }
 
-        console.log(arr.join(""));
         if(exp.length > 2){ // Subexpression checking
             const openI = [];
 
             for(let i = 0; i < arr.length; i++){ // Check subexpressions.
-                console.log(arr[i]);
                 if(arr[i] === '¬' && arr[i+1] === '('){ // If it has negation+parentheses body.
                     openParentheses.push(i+1);
                     openI.push(i+1);
@@ -192,22 +182,12 @@ const Input = () => {
                     const index = openI.pop() + 1;
                     let subexp = arr.join("").substring(index, i).split("");
                     closeParentheses[index - 1] = i;
-                    console.log(subexp.join(""));
-                    console.log(exp.join(""));
-                    console.log(index);
-                    console.log(acc);
                     if(acc[subexp.join("")] !== undefined && !((index-2) !== 0 && arr[index - 2] === '¬')) // If the subexpression exists, do nothing.
                         continue;
                     else 
                     {
                         acc = {...acc, ...evaluate(subexp, acc)};
                         
-                        console.log(subexp.join(""));
-                        console.log(exp.join(""));
-                        console.log(acc);
-
-                        console.log(`${index} ${arr[index-2]}`);
-
                         if(arr[index - 2] === '¬'){
                             
                             if(acc[subexp.join("")] === undefined)
@@ -220,9 +200,6 @@ const Input = () => {
                 }
             }
         }
-
-        console.log(exp.join(""));
-        console.log(acc);
 
         let inParentheses = 0;
         if(exp.length > 1)
@@ -243,44 +220,33 @@ const Input = () => {
                         : (arr[i+1] === '¬' ? (Object.keys(variables).indexOf(arr[i+2]) !== -1 ? acc[arr.join("").substring(i+1, i+3)] 
                         : acc['¬(' + arr.join("").substring(i + 3, closeParentheses[i+2]) + ')']) : variables[arr[i+1]]);                        
 
-                        console.log(arr[i]);
-                        console.log(right);
-                        console.log(left);
-                        console.log(acc);
-
                         switch (arr[i]) {
                             case '∧': // Conjunction
-                                console.log("Conjunction " + i);
                                 for(let i = 0; i < left.length; i++)
                                     results.push(left[i] && right[i]);                                                    
                             break;
                             
                             case '∨': // Disjunction
-                                console.log("Disjunction");
                                 for(let i = 0; i < left.length; i++)
                                     results.push(left[i] || right[i]);
                             break;
 
                             case '¬': // Negation
-                                console.log("Negation");
                                 for(let i = 0; i < right.length; i++)
                                     results.push(!right[i]);
                             break;
 
                             case '→': // Implication
-                                console.log("Implication");
                                 for(let i = 0; i < left.length; i++)
                                     results.push(!left[i] || (left[i] && right[i]))
                             break;
 
                             case '↔': // Equivalence
-                                console.log("Equivalence"); 
                                 for(let i = 0; i < left.length; i++)
                                     results.push(left[i] === right[i]);
                             break;
 
                             case '⊻': // Exclusive disjunction
-                                console.log("Exclusive disjunction");
                                 for(let i = 0; i < left.length; i++)
                                     results.push((left[i] && !right[i]) || (right[i] && !left[i]));
                             break;
@@ -299,8 +265,6 @@ const Input = () => {
             }
         else if(arr.length === 1) // rare case: only one variable in the formula
             results.push(...variables[exp[0]]);
-        console.log(exp.join(""));
-        console.log(results);
 
         if(results.length > 0)
             return {...acc, [exp.join("")]: results};
