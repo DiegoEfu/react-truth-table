@@ -4,6 +4,7 @@ import Results from './Results';
 
 const logicOperators = ['∧', '∨', '¬', '→', '↔', '⊻'];
 const isLogicalOperator = (c) => logicOperators.indexOf(c) !== -1;
+const expressionChanges = {};
 
 const Input = () => {
 
@@ -127,17 +128,18 @@ const Input = () => {
     const checkHighestPrecedence = (exp) => {
         const precedences = {'∧': 1, '∨': 3, '→': 4, '↔': 5, '⊻': 2};
         let inParentheses = 0;
-        let precedence = -1;
+        let precedenceIndex = -1;
         for(let i = 0; i < exp.length; i++){ // Find all symbols with their precedence
             const currentSymbol = exp[i];
+            const currentPrecedence = precedenceIndex < 0 ? 0 : precedences[exp[precedenceIndex]];
             if(currentSymbol === '(')
                 inParentheses++;
             else if(currentSymbol === ')')
                 inParentheses--;
             else if(!inParentheses && isLogicalOperator(currentSymbol) && currentSymbol !== '¬')
-                precedence = precedence < precedences[currentSymbol] ? i : precedence;
+                precedenceIndex = currentPrecedence < precedences[currentSymbol] ? i : precedenceIndex;
         }
-        return precedence;
+        return precedenceIndex;
     };
 
     const countSymbols = (exp) => {
@@ -156,17 +158,17 @@ const Input = () => {
 
     const evaluate = (exp, acc) => {
         const results = [];
-        const arr = exp;
+        const arr = [...exp];
         const openParentheses = [];
         const closeParentheses = {};
         console.log(exp.join(""));
-        const highestPrecedence = checkHighestPrecedence(arr);
 
-        if(arr[highestPrecedence] !== '¬' && countSymbols(arr) >= 2){
-             arr.splice(highestPrecedence, 0, ')');
-             arr.splice(highestPrecedence+2,0, '(')
-             arr.push(')');
-             arr.unshift('(');
+        if(countSymbols(arr) >= 2){
+            const highestPrecedence = checkHighestPrecedence(arr);
+            arr.splice(highestPrecedence, 0, ')');
+            arr.splice(highestPrecedence+2,0, '(')
+            arr.push(')');
+            arr.unshift('(');
         }
 
         console.log(arr.join(""));
@@ -211,7 +213,6 @@ const Input = () => {
         }
 
         console.log(exp.join(""));
-        console.log(closeParentheses);
         console.log(acc);
 
         let inParentheses = 0;
@@ -287,7 +288,7 @@ const Input = () => {
                 else if(arr[i] === ')')
                     inParentheses--;
             }
-        else // rare case: only one variable in the formula
+        else if(arr.length === 1) // rare case: only one variable in the formula
             results.push(...variables[exp[0]]);
         console.log(exp.join(""));
         console.log(results);
