@@ -2,6 +2,7 @@ import React from 'react';
 import { Paper, Grid, Table, TableHead, TableRow, TableCell, TableBody, TableContainer, Typography } from '@mui/material';
 
 const Results = ({formula, tables, variables}) => {
+    const arr = tables[formula];
     return (
         <>
             <Typography variant='body-1' color="white"><strong>Interpreted Formula:</strong> {formula}</Typography>
@@ -23,9 +24,9 @@ const Results = ({formula, tables, variables}) => {
 
                                 <TableBody>
                                     {
-                                        variables[k].map((v) =>
+                                        variables[k].map((v, i) =>
                                             <TableRow>
-                                                <TableCell align='center'>
+                                                <TableCell align='center' key={k+i}>
                                                     {v ? "T" : "F"}
                                                 </TableCell>
                                             </TableRow>
@@ -54,9 +55,9 @@ const Results = ({formula, tables, variables}) => {
 
                                 <TableBody>
                                     {
-                                        tables[k].map((v) =>
+                                        tables[k].map((v, i) =>
                                             <TableRow>
-                                                <TableCell align='center'>
+                                                <TableCell align='center' key={k + i}>
                                                     {v ? "T" : "F"}
                                                 </TableCell>
                                             </TableRow>
@@ -68,8 +69,15 @@ const Results = ({formula, tables, variables}) => {
                     </Grid>
                 ))}   
             </Grid>
+            <Typography variant='h4' color="white" align='center'>
+                Clasification
+            </Typography>
+            <Typography variant='h6' color="white" align='center'>
+                {arr.every((v) => v) ? "Tautology" 
+                : arr.some((v) => v) ? "Contingency" 
+                : "Contradiction"}
+            </Typography>
         </>
-        
   )
 }
 

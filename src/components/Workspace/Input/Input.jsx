@@ -193,20 +193,30 @@ const Input = () => {
                     const index = openI.pop() + 1;
                     let subexp = arr.join("").substring(index, i).split("");
                     closeParentheses[index - 1] = i;
-                    if(Object.keys(acc).indexOf(subexp.join("")) !== -1) // If the subexpression exists, do nothing.
+                    console.log(subexp.join(""));
+                    console.log(exp.join(""));
+                    console.log(index);
+                    console.log(acc);
+                    if(acc[subexp.join("")] !== undefined && !((index-2) !== 0 && arr[index - 2] === '¬')) // If the subexpression exists, do nothing.
                         continue;
                     else 
                     {
                         acc = {...acc, ...evaluate(subexp, acc)};
+                        
                         console.log(subexp.join(""));
+                        console.log(exp.join(""));
                         console.log(acc);
 
-                        if(arr[index - 2] === '¬')
+                        console.log(`${index} ${arr[index-2]}`);
+
+                        if(arr[index - 2] === '¬'){
+                            
                             if(acc[subexp.join("")] === undefined)
                                 continue;
-                            else
+                            else{
                                 acc = {...acc, ...evaluate(('¬(' + subexp.join("") + ')').split(""), acc)};
-                                
+                            }
+                        }
                     }
                 }
             }
