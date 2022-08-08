@@ -1,8 +1,9 @@
+import { Typography } from '@mui/material'
 import React from 'react'
 
 const Footer = () => {
   return (
-    <div>Footer</div>
+    <Typography textAlign='center' color='white' variant='body-2'>Created by Diego Faria in August, 2022.</Typography>
   )
 }
 
