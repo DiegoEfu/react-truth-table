@@ -148,6 +148,43 @@ const Input = () => {
         return count;
     };
 
+    const inParenthesesRightSubExp = (symbolIndex, exp) => {
+        let parentheses = 0;
+        for(let i = symbolIndex + 1; exp.length > i ; i++){
+            const currentSymbol = exp[i];
+            if(currentSymbol === '(')
+                parentheses++;
+            else if(currentSymbol === ')')
+                parentheses--;
+            
+            if(parentheses === 0 && i === exp.length - 1)
+                return true;
+            else if(parentheses === 0 && i !== exp.length - 1)
+                return false;
+        }
+        return false;
+    };
+
+    const inParenthesesLeftSubExp = (symbolIndex, exp) => {
+        let parentheses = 0;
+        console.log(symbolIndex);
+        for(let i = symbolIndex - 1; -1 < i ; i--){
+            const currentSymbol = exp[i];
+            if(currentSymbol === ')')
+                parentheses++;
+            else if(currentSymbol === '(')
+                parentheses--;
+            
+            console.log(`${parentheses} ${currentSymbol}`);
+                
+            if(parentheses === 0 && i === 0)
+                return true;
+            else if(parentheses === 0 && i !== 0)
+                return false;
+        }
+        return false;
+    };
+
     const evaluate = (exp, acc) => {
         const results = [];
         const arr = [...exp];
@@ -156,11 +193,21 @@ const Input = () => {
 
         if(countSymbols(arr) >= 2){
             const highestPrecedence = checkHighestPrecedence(arr);
-            arr.splice(highestPrecedence, 0, ')');
-            arr.splice(highestPrecedence+2,0, '(')
-            arr.push(')');
-            arr.unshift('(');
+            console.log(inParenthesesLeftSubExp(highestPrecedence, arr));
+            if(!inParenthesesRightSubExp(highestPrecedence, arr)){ // AFTER symbol
+                console.log("RIGHT NOT IN PARENTHESES");
+                arr.splice(highestPrecedence+1,0, '(')
+                arr.push(')');
+            }
+            
+            if(!inParenthesesLeftSubExp(highestPrecedence, arr)){ // BEFORE symbol
+                console.log("LEFT NOT IN PARENTHESES");
+                arr.splice(highestPrecedence, 0, ')'); 
+                arr.unshift('(');                          
+            }
         }
+
+        console.log(arr.join(""));
 
         if(exp.length > 2){ // Subexpression checking
             const openI = [];
