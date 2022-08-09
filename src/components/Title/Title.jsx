@@ -62,19 +62,17 @@ const Title = () => {
                 <Typography id="modal-modal-title" variant="h4">
                     Instructions
                 </Typography>
-                <ol>
-                    <li><Typography variant="body1">Enter your logic formula.</Typography></li>
-                    <li><Typography variant="body1">Click enter.</Typography></li>
-                    <li><Typography variant="body1">If the formula is correct, you'll see your variables and truth tables, with 0s and 1s or Ts and Fs.</Typography></li>
-                    <li><Typography variant="body1">You will be shown the type of statement:</Typography>
-                        <ul>
-                            <li><Typography variant='body1'><strong>TAUTOLOGY</strong> if all the combinations are true.</Typography></li>
-                            <li><Typography variant='body1'><strong>CONTINGENCY</strong> if there are both true and false combinations.</Typography></li>
-                            <li><Typography variant='body1'><strong>CONTRADICTION</strong> if all the combinations are false.</Typography></li>
-                        </ul>
-                    </li>
-                </ol>
-                <Typography variant='body1'><strong>NOTE</strong>: If your formula is not correct, then a message with the error will be shown.</Typography>
+                <Typography variant='body1'>Enter your formula, submit it (double negations will be removed), see the variables and formulas, and check its statement clasification.</Typography>                
+                <Typography variant='body1'><strong>Symbols</strong>:</Typography>
+                <ul>
+                    <li><Typography variant='body1'><strong>VARIABLES:</strong> Letters.</Typography></li>
+                    <li><Typography variant='body1'><strong>CONJUNCTION:</strong> ^, ∧, &&</Typography></li>
+                    <li><Typography variant='body1'><strong>DISJUNCTION:</strong> ||, ∨ </Typography></li>
+                    <li><Typography variant='body1'><strong>EXCLUSIVE DISJUNCTION:</strong> |, ⊻ </Typography></li>
+                    <li><Typography variant='body1'><strong>IMPLICATION:</strong> ->, ⇒, ⊃, →</Typography></li>
+                    <li><Typography variant='body1'><strong>EQUIVALENCE:</strong> {'<->'}, ↔ </Typography></li>
+                    <li><Typography variant='body1'><strong>NEGATION:</strong> !, ¬, ~</Typography></li>
+                </ul>
             </Box>
         </Modal>
     </>

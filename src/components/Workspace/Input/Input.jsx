@@ -97,8 +97,9 @@ const Input = () => {
             formula = formula.replace(/->|⇒|⊃/g, '→');
             formula = formula.replace(/\|\|/g, '∨');
             formula = formula.replace(/&&|\^/g, '∧');
-            formula = formula.replace(/!/g, '¬');
+            formula = formula.replace(/!|~/g, '¬');
             formula = formula.replace(/¬¬/g, '');
+            formula = formula.replace(/\|/g, '⊻');
             formula = formula.split("");
 
             for(let i = 0; i < formula.length; i++)
@@ -110,7 +111,8 @@ const Input = () => {
             }
 
             return formula;
-        };   
+        };
+
         formula = changeSymbols(formula);
         setCorrect(checkParenthesesCorrectness(formula) && checkSymbolCorrectness(formula) && Object.keys(vars).length > 0);
         setInput(formula);
