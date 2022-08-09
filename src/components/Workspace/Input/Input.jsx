@@ -167,16 +167,13 @@ const Input = () => {
 
     const inParenthesesLeftSubExp = (symbolIndex, exp) => {
         let parentheses = 0;
-        console.log(symbolIndex);
         for(let i = symbolIndex - 1; -1 < i ; i--){
             const currentSymbol = exp[i];
             if(currentSymbol === ')')
                 parentheses++;
             else if(currentSymbol === '(')
                 parentheses--;
-            
-            console.log(`${parentheses} ${currentSymbol}`);
-                
+                            
             if(parentheses === 0 && i === 0)
                 return true;
             else if(parentheses === 0 && i !== 0)
@@ -185,29 +182,28 @@ const Input = () => {
         return false;
     };
 
-    const evaluate = (exp, acc) => {
-        const results = [];
-        const arr = [...exp];
-        const openParentheses = [];
-        const closeParentheses = {};
-
+    const fixExpression = (arr) => {
         if(countSymbols(arr) >= 2){
             const highestPrecedence = checkHighestPrecedence(arr);
-            console.log(inParenthesesLeftSubExp(highestPrecedence, arr));
+
             if(!inParenthesesRightSubExp(highestPrecedence, arr)){ // AFTER symbol
-                console.log("RIGHT NOT IN PARENTHESES");
                 arr.splice(highestPrecedence+1,0, '(')
                 arr.push(')');
             }
             
             if(!inParenthesesLeftSubExp(highestPrecedence, arr)){ // BEFORE symbol
-                console.log("LEFT NOT IN PARENTHESES");
                 arr.splice(highestPrecedence, 0, ')'); 
                 arr.unshift('(');                          
             }
         }
+        return arr;
+    };
 
-        console.log(arr.join(""));
+    const evaluate = (exp, acc) => {
+        const results = [];
+        const arr = fixExpression([...exp]);
+        const openParentheses = [];
+        const closeParentheses = {};
 
         if(exp.length > 2){ // Subexpression checking
             const openI = [];
