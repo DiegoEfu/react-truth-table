@@ -24,19 +24,20 @@ const Title = () => {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
-                    Truth Table Calculator
-                </Typography>
-                <IconButton
-                    size="large"
-                    edge="end"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                    onClick={handleOpen}
-                >
-                    <InfoIcon />
-                </IconButton>
+                    <Typography variant="h4" sx={{ flexGrow: 1 }}>
+                        Truth Table Calculator                    
+                    </Typography>
+
+                    <IconButton
+                        size="large"
+                        edge="end"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                        onClick={handleOpen}
+                    >
+                        <InfoIcon />
+                    </IconButton>
                 </Toolbar>
             </AppBar>
         </Box>
@@ -62,6 +63,9 @@ const Title = () => {
                     <li><Typography variant='body1'><strong>EQUIVALENCE:</strong> {'<->'}, ↔ </Typography></li>
                     <li><Typography variant='body1'><strong>NEGATION:</strong> !, ¬, ~</Typography></li>
                 </ul>
+
+                <Typography variant='body1'>This web application was created by&nbsp; 
+                <a href="https://www.linkedin.com/in/diego-faria-aa53bb205/">Diego Faria</a>.</Typography>
             </Box>
         </Modal>
     </>
