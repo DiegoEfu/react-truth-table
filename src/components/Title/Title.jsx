@@ -25,7 +25,7 @@ const Title = () => {
         <Box sx={{ flexGrow: 1 }}>
             <AppBar position="static">
                 <Toolbar>
-                <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
+                <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
                     Truth Table Calculator
                 </Typography>
                 <IconButton
@@ -37,16 +37,6 @@ const Title = () => {
                     onClick={handleOpen}
                 >
                     <InfoIcon />
-                </IconButton>
-
-                <IconButton
-                    size="large"
-                    edge="end"
-                    color="inherit"
-                    aria-label="menu"
-                    sx={{ mr: 2 }}
-                >
-                    <LanguageIcon />
                 </IconButton>
                 </Toolbar>
             </AppBar>

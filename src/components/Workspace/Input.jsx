@@ -321,12 +321,12 @@ const Input = () => {
         <>
             <Grid container style={{background: '#66CDAA', paddingTop: '15px', paddingBottom: '15px'}}>
                 <Grid item xs={1} />
-                <Grid item xs={9}>
+                <Grid item xs={7} md={8}>
                     <TextField placeholder='Introduce your formalized formula.' fullWidth 
                         variant='filled' style={{background: "white"}} label="Input"
                         onChange={(e) => {checkCorrectness(e.target.value)}} />
                 </Grid>
-                <Grid item md={1} style={{display: "flex", flexDirection:"row-reverse"}}>
+                <Grid item xs={3} md={2} style={{display: "flex", flexDirection:"row-reverse"}}>
                     <Button fullWidth variant='contained' disabled={!correct} onClick={() => {setResults(evaluate(input, {}))}}>Submit</Button>
                 </Grid>
             </Grid>
