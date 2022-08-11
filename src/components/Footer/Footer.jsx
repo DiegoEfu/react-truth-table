@@ -11,7 +11,7 @@ const Footer = () => {
       </Grid>
       <Grid item xs={1} />
     </Grid>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

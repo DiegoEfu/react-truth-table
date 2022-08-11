@@ -1,6 +1,5 @@
 import { AppBar, Box, Modal, IconButton, Toolbar, Typography } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
-import LanguageIcon from '@mui/icons-material/Language';
 import React from 'react';
 
 const Title = () => {
@@ -66,7 +65,7 @@ const Title = () => {
             </Box>
         </Modal>
     </>
-  )
+  );
 };
 
 export default Title;

@@ -9,6 +9,6 @@ const App = () => {
       <Footer /> { /* Footer with information about the app's developer and the app itself */ }
     </>
   );
-}
+};
 
 export default App;

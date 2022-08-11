@@ -88,7 +88,7 @@ const Results = ({formula, tables, variables}) => {
                 : "Contradiction"}
             </Typography>
         </>
-  )
-}
+  );
+};
 
 export default Results;
